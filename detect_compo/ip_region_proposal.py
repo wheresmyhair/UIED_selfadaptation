@@ -1,8 +1,5 @@
-import cv2
-from os.path import join as pjoin
 import time
-import json
-import numpy as np
+import os
 
 import detect_compo.lib_ip.ip_preprocessing as pre
 import detect_compo.lib_ip.ip_draw as draw
@@ -41,8 +38,8 @@ def compo_detection(input_img_path, output_root, uied_params,
                     resize_by_height=800, classifier=None, show=False, wai_key=0):
 
     start = time.time()
-    name = input_img_path.split('/')[-1][:-4] if '/' in input_img_path else input_img_path.split('\\')[-1][:-4]
-    ip_root = file.build_directory(pjoin(output_root, "ip"))
+    name = os.path.split(input_img_path)[1].split('.')[0]
+    ip_root = file.build_directory(os.path.join(output_root, "ip"))
 
     # *** Step 1 *** pre-processing: read img -> get binary map
     org, grey = pre.read_img(input_img_path, resize_by_height)
@@ -64,7 +61,7 @@ def compo_detection(input_img_path, output_root, uied_params,
     # *** Step 4 ** nesting inspection: check if big compos have nesting element
     uicompos += nesting_inspection(org, grey, uicompos, ffl_block=uied_params['ffl-block'])
     Compo.compos_update(uicompos, org.shape)
-    draw.draw_bounding_box(org, uicompos, show=show, name='merged compo', write_path=pjoin(ip_root, name + '.jpg'), wait_key=wai_key)
+    draw.draw_bounding_box(org, uicompos, show=show, name='merged compo', write_path=os.path.join(ip_root, name + '.jpg'), wait_key=wai_key)
 
     # *** Step 5 *** image inspection: recognize image -> remove noise in image -> binarize with larger threshold and reverse -> rectangular compo detection
     # if classifier is not None:
@@ -82,10 +79,10 @@ def compo_detection(input_img_path, output_root, uied_params,
     # *** Step 6 *** element classification: all category classification
     # if classifier is not None:
     #     classifier['Elements'].predict([compo.compo_clipping(org) for compo in uicompos], uicompos)
-    #     draw.draw_bounding_box_class(org, uicompos, show=show, name='cls', write_path=pjoin(ip_root, 'result.jpg'))
-    #     draw.draw_bounding_box_class(org, uicompos, write_path=pjoin(output_root, 'result.jpg'))
+    #     draw.draw_bounding_box_class(org, uicompos, show=show, name='cls', write_path=os.path.join(ip_root, 'result.jpg'))
+    #     draw.draw_bounding_box_class(org, uicompos, write_path=os.path.join(output_root, 'result.jpg'))
 
     # *** Step 7 *** save detection result
     Compo.compos_update(uicompos, org.shape)
-    file.save_corners_json(pjoin(ip_root, name + '.json'), uicompos)
-    print("[Compo Detection Completed in %.3f s] Input: %s Output: %s" % (time.time() - start, input_img_path, pjoin(ip_root, name + '.json')))
+    file.save_corners_json(os.path.join(ip_root, name + '.json'), uicompos)
+    print("[Compo Detection Completed in %.3f s] Input: %s Output: %s" % (time.time() - start, input_img_path, os.path.join(ip_root, name + '.json')))

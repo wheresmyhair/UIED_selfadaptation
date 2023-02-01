@@ -140,24 +140,17 @@ def text_filter_noise(texts):
     return valid_texts
 
 
-def text_detection(input_file='../data/input/30800.jpg', output_file='../data/output', show=False, method='google', paddle_model=None):
+def text_detection(input_file='../data/input/30800.jpg', output_file='../data/output', show=False, method='paddle', paddle_model=None):
     '''
     :param method: google or paddle
     :param paddle_model: the preload paddle model for paddle ocr
     '''
     start = time.time()
-    name = input_file.split('/')[-1][:-4]
+    name = os.path.split(input_file)[-1].split('.')[0]
     ocr_root = pjoin(output_file, 'ocr')
     img = cv2.imread(input_file)
 
-    if method == 'google':
-        print('*** Detect Text through Google OCR ***')
-        ocr_result = ocr.ocr_detection_google(input_file)
-        texts = text_cvt_orc_format(ocr_result)
-        texts = merge_intersected_texts(texts)
-        texts = text_filter_noise(texts)
-        texts = text_sentences_recognition(texts)
-    elif method == 'paddle':
+    if method == 'paddle':
         # The import of the paddle ocr can be separate to the beginning of the program if you decide to use this method
         from paddleocr import PaddleOCR
         print('*** Detect Text through Paddle OCR ***')
@@ -168,6 +161,29 @@ def text_detection(input_file='../data/input/30800.jpg', output_file='../data/ou
     else:
         raise ValueError('Method has to be "google" or "paddle"')
 
+    visualize_texts(img, texts, shown_resize_height=800, show=show, write_path=pjoin(ocr_root, name+'.png'))
+    save_detection_json(pjoin(ocr_root, name+'.json'), texts, img.shape)
+    print("[Text Detection Completed in %.3f s] Input: %s Output: %s" % (time.time() - start, input_file, pjoin(ocr_root, name+'.json')))
+
+
+def preload_text_detection(method='paddle'):
+    if method == 'paddle':
+        # The import of the paddle ocr can be separate to the beginning of the program if you decide to use this method
+        from paddleocr import PaddleOCR
+        print('*** Detect Text through Paddle OCR ***')
+        return PaddleOCR(use_angle_cls=True, lang="ch")
+    else:
+        raise ValueError('Method has to be "google" or "paddle"')
+
+def text_detection_preload_model(input_file, output_file, model, show=False):
+    start = time.time()
+    name = os.path.split(input_file)[-1].split('.')[0]
+    ocr_root = pjoin(output_file, 'ocr')
+    img = cv2.imread(input_file)
+
+    result = model.ocr(input_file, cls=True)
+    texts = text_cvt_orc_format_paddle(result[0])
+   
     visualize_texts(img, texts, shown_resize_height=800, show=show, write_path=pjoin(ocr_root, name+'.png'))
     save_detection_json(pjoin(ocr_root, name+'.json'), texts, img.shape)
     print("[Text Detection Completed in %.3f s] Input: %s Output: %s" % (time.time() - start, input_file, pjoin(ocr_root, name+'.json')))

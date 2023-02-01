@@ -1,31 +1,8 @@
 from os.path import join as pjoin
-import cv2
 import os
-import numpy as np
 
-
-def resize_height_by_longest_edge(img_path, resize_length=800):
-    org = cv2.imread(img_path)
-    height, width = org.shape[:2]
-    if height > width:
-        return resize_length
-    else:
-        return int(resize_length * (height / width))
-
-
-def color_tips():
-    color_map = {'Text': (0, 0, 255), 'Compo': (0, 255, 0), 'Block': (0, 255, 255), 'Text Content': (255, 0, 255)}
-    board = np.zeros((200, 200, 3), dtype=np.uint8)
-
-    board[:50, :, :] = (0, 0, 255)
-    board[50:100, :, :] = (0, 255, 0)
-    board[100:150, :, :] = (255, 0, 255)
-    board[150:200, :, :] = (0, 255, 255)
-    cv2.putText(board, 'Text', (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
-    cv2.putText(board, 'Non-text Compo', (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
-    cv2.putText(board, "Compo's Text Content", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
-    cv2.putText(board, "Block", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
-    cv2.imshow('colors', board)
+import input_processing.img_preprocessing as img_preprocessing
+from result_processing.utils import show_color_tips
 
 
 if __name__ == '__main__':
@@ -54,11 +31,11 @@ if __name__ == '__main__':
     input_path_img = 'data/input/5.jpg'
     output_root = 'data/output'
 
-    resized_height = resize_height_by_longest_edge(input_path_img, resize_length=800)
-    color_tips()
+    resized_height = img_preprocessing.resize_height_by_longest_edge(input_path_img, resize_length=800)
+    show_color_tips()
 
     is_ip = True
-    is_clf = False
+    is_clf = True
     is_ocr = True
     is_merge = True
 
