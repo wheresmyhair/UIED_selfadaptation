@@ -108,6 +108,19 @@ def text_cvt_orc_format(ocr_result):
 
 
 def text_cvt_orc_format_paddle(paddle_result):
+    '''
+    paddle_result sample
+    [
+        [
+            [[301.0, 5.0], [379.0, 7.0], [379.0, 24.0], [301.0, 22.0]],
+            ('N846:11', 0.806403636932373)
+        ],
+        [
+            [[334.0, 34.0], [399.0, 34.0], [399.0, 48.0], [334.0, 48.0]],
+            ('20220812', 0.9021412134170532)
+        ],
+    ]
+    '''
     texts = []
     for i, line in enumerate(paddle_result):
         points = np.array(line[0])
@@ -132,7 +145,7 @@ def text_detection(input_file='../data/input/30800.jpg', output_file='../data/ou
     :param method: google or paddle
     :param paddle_model: the preload paddle model for paddle ocr
     '''
-    start = time.clock()
+    start = time.time()
     name = input_file.split('/')[-1][:-4]
     ocr_root = pjoin(output_file, 'ocr')
     img = cv2.imread(input_file)
@@ -151,14 +164,11 @@ def text_detection(input_file='../data/input/30800.jpg', output_file='../data/ou
         if paddle_model is None:
             paddle_model = PaddleOCR(use_angle_cls=True, lang="ch")
         result = paddle_model.ocr(input_file, cls=True)
-        texts = text_cvt_orc_format_paddle(result)
+        texts = text_cvt_orc_format_paddle(result[0])
     else:
         raise ValueError('Method has to be "google" or "paddle"')
 
     visualize_texts(img, texts, shown_resize_height=800, show=show, write_path=pjoin(ocr_root, name+'.png'))
     save_detection_json(pjoin(ocr_root, name+'.json'), texts, img.shape)
-    print("[Text Detection Completed in %.3f s] Input: %s Output: %s" % (time.clock() - start, input_file, pjoin(ocr_root, name+'.json')))
-
-
-# text_detection()
+    print("[Text Detection Completed in %.3f s] Input: %s Output: %s" % (time.time() - start, input_file, pjoin(ocr_root, name+'.json')))
 
