@@ -2,7 +2,8 @@ import torch
 
 model = torch.hub.load('ultralytics/yolov5', 'custom', path='./detect_compo/weights/yolov5.pt')
 
-path_img = './data/input/1.jpg'
+jpg = '11'
+path_img = f'D:\\_proj_dev\\UIED\\data\\local\\input\\{jpg}.jpg'
 
 result = model(path_img)
 
