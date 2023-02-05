@@ -28,14 +28,14 @@ if __name__ == '__main__':
                   'merge-contained-ele':True, 'merge-line-to-paragraph':False, 'remove-bar':True}
 
     # set input image path
-    input_path_img = 'data/input/5.jpg'
+    input_path_img = 'data/input/7.jpg'
     output_root = 'data/output'
 
     resized_height = img_preprocessing.resize_height_by_longest_edge(input_path_img, resize_length=800)
     show_color_tips()
 
     is_ip = True
-    is_clf = True
+    is_clf = False
     is_ocr = True
     is_merge = True
 
