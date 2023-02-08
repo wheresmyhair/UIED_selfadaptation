@@ -43,16 +43,18 @@ input_img_path = 'data/input/5.jpg'
 name = os.path.split(input_img_path)[1].split('.')[0]
 output_root = 'data/output'
 ip_root = file.build_directory(os.path.join(output_root, "ip"))
-
+uied_params = {'min-grad':10, 'ffl-block':5, 'min-ele-area':50,
+                'merge-contained-ele':True, 'merge-line-to-paragraph':False, 'remove-bar':True}
 # *** Step 1 *** pre-processing: read img -> get binary map
 resize_by_height = 800
 org, grey = pre.read_img(input_img_path, resize_by_height)
 binary = pre.binarization(org, grad_min=10)
-cv2.imshow('org', binary)
-cv2.waitKey(0)
+# cv2.imshow('org', binary)
+# cv2.waitKey(0)
 
 # *** Step 2 *** element detection
-det.rm_line(binary, show=True)
+det.rm_line(binary, show=False)
+cv2.waitKey(0)
 uicompos = det.component_detection(binary, min_obj_area=int(uied_params['min-ele-area']))
 
 # *** Step 3 *** results refinement
