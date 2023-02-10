@@ -8,9 +8,7 @@ An adaptation version of UIED.
 [2. Object Detection for Graphical User Interface: Old Fashioned or Deep Learning or a Combination?](https://arxiv.org/abs/2008.05132)
 
 ## Future works may be based on...
-[1. (Blog) Understanding User Interfaces with Screen Parsing](https://blog.ml.cmu.edu/2021/12/10/understanding-user-interfaces-with-screen-parsing/) 
- 
-[2. Screen Parsing: Towards Reverse Engineering of UI Models from Screenshots](https://dl.acm.org/doi/10.1145/3472749.3474763) [(local link)](./data/__papers/Screen%20Parsing%20-%20Towards%20Reverse%20Engineering%20of%20UI%20Models%20from%20Screenshots.pdf)
+[1. Screen Parsing: Towards Reverse Engineering of UI Models from Screenshots](https://dl.acm.org/doi/10.1145/3472749.3474763) [(paper local link)](./data/__papers/Screen%20Parsing%20-%20Towards%20Reverse%20Engineering%20of%20UI%20Models%20from%20Screenshots.pdf) [(blog)](https://blog.ml.cmu.edu/2021/12/10/understanding-user-interfaces-with-screen-parsing/)
 
 ## What is it?
 
